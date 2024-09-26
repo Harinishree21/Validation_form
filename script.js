@@ -2,62 +2,117 @@ document.addEventListener('DOMContentLoaded', function() {
     var loginForm = document.getElementById('loginForm');
     var signupForm = document.getElementById('signupForm');
 
+    // Regular expressions for validation
+    var usernamePattern = /^[a-zA-Z0-9]{3,}$/; // Alphanumeric, at least 3 characters
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; // Valid email format
+    var phoneNumberPattern = /^[0-9]+$/; // Only digits allowed
+    var passwordPattern = /^.{6,}$/; // Password must be at least 6 characters long
+
+    // Function to show error message next to the input
+    function showError(input, message) {
+        const errorElement = input.parentElement.querySelector('.error-message');
+        errorElement.innerText = message;
+        errorElement.style.display = 'block';
+    }
+
+    // Function to clear error message
+    function clearError(input) {
+        const errorElement = input.parentElement.querySelector('.error-message');
+        errorElement.innerText = '';
+        errorElement.style.display = 'none';
+    }
+
     // Function to validate login form
     function validateLoginForm() {
-        var loginUsername = document.getElementById('loginUsername').value;
-        var loginPassword = document.getElementById('loginPassword').value;
+        var isValid = true;
+        var loginUsername = document.getElementById('loginUsername');
+        var loginPassword = document.getElementById('loginPassword');
 
-        if (loginUsername === "") {
-            alert("Username cannot be empty");
-            return false;
-        }
-        if (loginPassword === "") {
-            alert("Password cannot be empty");
-            return false;
+        clearError(loginUsername);
+        clearError(loginPassword);
+
+        if (loginUsername.value === "") {
+            showError(loginUsername, "Username cannot be empty");
+            isValid = false;
+        } else if (!usernamePattern.test(loginUsername.value)) {
+            showError(loginUsername, "Username must contain only letters and numbers, and be at least 3 characters long.");
+            isValid = false;
         }
 
-        return true;
+        if (loginPassword.value === "") {
+            showError(loginPassword, "Password cannot be empty");
+            isValid = false;
+        } else if (!passwordPattern.test(loginPassword.value)) {
+            showError(loginPassword, "Password must be at least 6 characters long.");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     // Function to validate signup form
     function validateSignupForm() {
-        var username = document.getElementById('username').value;
-        var email = document.getElementById('email').value;
-        var phone = document.getElementById('phone').value;
-        var dob = document.getElementById('dob').value;
-        var password = document.getElementById('password').value;
-        var confirmPassword = document.getElementById('confirmPassword').value;
+        var isValid = true;
+        var username = document.getElementById('username');
+        var email = document.getElementById('email');
+        var phone = document.getElementById('phone');
+        var dob = document.getElementById('dob');
+        var password = document.getElementById('password');
+        var confirmPassword = document.getElementById('confirmPassword');
 
-        if (username === "") {
-            alert("Username cannot be empty");
-            return false;
-        }
-        if (email === "") {
-            alert("Email cannot be empty");
-            return false;
-        }
-        if (phone === "") {
-            alert("Phone number cannot be empty");
-            return false;
-        }
-        if (dob === "") {
-            alert("Date of birth cannot be empty");
-            return false;
-        }
-        if (password === "") {
-            alert("Password cannot be empty");
-            return false;
-        }
-        if (confirmPassword === "") {
-            alert("Please confirm your password");
-            return false;
-        }
-        if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return false;
+        clearError(username);
+        clearError(email);
+        clearError(phone);
+        clearError(dob);
+        clearError(password);
+        clearError(confirmPassword);
+
+        if (username.value === "") {
+            showError(username, "Username cannot be empty");
+            isValid = false;
+        } else if (!usernamePattern.test(username.value)) {
+            showError(username, "Username must contain only letters and numbers, and be at least 3 characters long.");
+            isValid = false;
         }
 
-        return true;
+        if (email.value === "") {
+            showError(email, "Email cannot be empty");
+            isValid = false;
+        } else if (!emailPattern.test(email.value)) {
+            showError(email, "Please enter a valid email address.");
+            isValid = false;
+        }
+
+        if (phone.value === "") {
+            showError(phone, "Phone number cannot be empty");
+            isValid = false;
+        } else if (!phoneNumberPattern.test(phone.value)) {
+            showError(phone, "Phone number can only contain digits.");
+            isValid = false;
+        }
+
+        if (dob.value === "") {
+            showError(dob, "Date of birth cannot be empty");
+            isValid = false;
+        }
+
+        if (password.value === "") {
+            showError(password, "Password cannot be empty");
+            isValid = false;
+        } else if (!passwordPattern.test(password.value)) {
+            showError(password, "Password must be at least 6 characters long.");
+            isValid = false;
+        }
+
+        if (confirmPassword.value === "") {
+            showError(confirmPassword, "Please confirm your password");
+            isValid = false;
+        } else if (password.value !== confirmPassword.value) {
+            showError(confirmPassword, "Passwords must be the same.");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     // Add event listener for login form submission
@@ -66,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault(); // Prevent form submission
             if (validateLoginForm()) {
                 alert("Login form submitted successfully");
-                // Perform actual form submission or other actions here
                 loginForm.reset();
             }
         });
@@ -78,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault(); // Prevent form submission
             if (validateSignupForm()) {
                 alert("Signup form submitted successfully");
-                // Perform actual form submission or other actions here
                 signupForm.reset();
             }
         });
